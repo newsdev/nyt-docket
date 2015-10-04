@@ -6,12 +6,13 @@ Run the demo app.
 python -m docket.demo
 ```
 
-Use the docket loader manually.
-```
+Use the docket loader manually from within your Python script.
+```python
 from docket import grants
 
 g = grants.Load()
 g.scrape()
 
-print g.cases
+for case in g.cases:
+    print case.__dict__
 ```
