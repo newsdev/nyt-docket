@@ -3,4 +3,5 @@ from docket import grants
 g = grants.Load()
 g.scrape()
 
-print g.cases
+for case in g.cases:
+    print case.__dict__

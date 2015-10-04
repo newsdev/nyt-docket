@@ -46,8 +46,7 @@ class Load(object):
     def scrape(self):
         for term in range(2007, int(current_term()) + 1):
             URL = 'http://www.supremecourt.gov/grantednotedlist/%sgrantednotedlist' % str(term)[2:4]
-            print term
-            print URL
+            print "Scraping %s" % term
 
             r = requests.get(URL)
             soup = BeautifulSoup(r.content, 'lxml')
