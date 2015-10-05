@@ -1,4 +1,5 @@
 import datetime
+import os
 import re
 
 from bs4 import BeautifulSoup
@@ -32,6 +33,7 @@ class MeritsCase(BaseObject):
         self.dategranted = None
         self.court_originated = None
         self.case_code = None
+        self.question = None
 
         self.set_fields(**kwargs)
 
@@ -72,6 +74,24 @@ class Load(BaseObject):
                     current_case = row.select('a')[0].text.replace(u')','').strip()
                     cases[current_case] = {}
                     cases[current_case]['casename'] = line.split(current_case)[1].strip()
+
+                    # Get detail PDF if it doesn't exist already.
+                    # These get written as PDFs and then transformed
+                    # from PDF to text in two steps.
+                    detail_url = row.select('a')[0].attrs['href'].replace('../', 'http://supremecourt.gov/').replace(' ', '%20')
+                    pdf_path = '/tmp/%s' % detail_url.split('/')[-1]
+                    txt_path = pdf_path.replace('.pdf', '.txt')
+                    z = requests.get(detail_url)
+
+                    if not os.path.isfile(pdf_path):
+                        with open(pdf_path, 'w') as writefile:
+                            writefile.write(z.content)
+
+                    if not os.path.isfile(txt_path):
+                        os.system('pdf2txt.py -o %s %s' % (txt_path, pdf_path))
+
+                    with open(txt_path, 'r') as readfile:
+                        cases[current_case]['question'] = str(readfile.read()).decode('latin-1')
 
                 if u"Court:" in line:
                     continued = False
