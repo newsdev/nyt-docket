@@ -28,9 +28,9 @@ class MeritsCase(BaseObject):
         self.casename = None
         self.term = None
         self.docket = None
-        self.argument_date = None
-        self.granted_date = None
-        self.originating_court = None
+        self.dateargued = None
+        self.dategranted = None
+        self.court_originated = None
         self.case_code = None
 
         self.set_fields(**kwargs)
@@ -76,11 +76,11 @@ class Load(BaseObject):
                 if u"Court:" in line:
                     continued = False
                     if u"Granted:" in line:
-                        cases[current_case]['originating_court'] = line.split(u'Court:')[1].split(u'Granted:')[0].strip()
-                        cases[current_case]['granted_date'] = line.split(u'Granted:')[1].strip()
+                        cases[current_case]['court_originated'] = line.split(u'Court:')[1].split(u'Granted:')[0].strip()
+                        cases[current_case]['dategranted'] = line.split(u'Granted:')[1].strip()
                 elif u"Argument Date:" in line:
                     continued = False
-                    cases[current_case]['argument_date'] = line.split(u'Argument Date:')[1].strip()
+                    cases[current_case]['dateargued'] = line.split(u'Argument Date:')[1].strip()
 
                 if continued:
                     if len(row.select('b')) > 0:
