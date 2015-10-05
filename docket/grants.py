@@ -38,13 +38,16 @@ class MeritsCase(BaseObject):
     def __unicode__(self):
         return "(%s) %s" % (self.term, self.casename)
 
-class Load(object):
+class Load(BaseObject):
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.cases = []
+        self.terms = range(2007, int(current_term()) + 1)
+
+        self.set_fields(**kwargs)
 
     def scrape(self):
-        for term in range(2007, int(current_term()) + 1):
+        for term in self.terms:
             URL = 'http://www.supremecourt.gov/grantednotedlist/%sgrantednotedlist' % str(term)[2:4]
             print "Scraping %s" % term
 
