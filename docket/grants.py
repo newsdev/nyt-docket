@@ -81,9 +81,9 @@ class Load(BaseObject):
                     detail_url = row.select('a')[0].attrs['href'].replace('../', 'http://supremecourt.gov/').replace(' ', '%20')
                     pdf_path = '/tmp/%s' % detail_url.split('/')[-1]
                     txt_path = pdf_path.replace('.pdf', '.txt')
-                    z = requests.get(detail_url)
 
                     if not os.path.isfile(pdf_path):
+                        z = requests.get(detail_url)
                         with open(pdf_path, 'w') as writefile:
                             writefile.write(z.content)
 
