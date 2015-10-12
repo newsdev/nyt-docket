@@ -44,7 +44,7 @@ class Load(BaseObject):
 
     def __init__(self, **kwargs):
         self.cases = []
-        self.terms = range(2007, int(current_term()) + 1)
+        self.terms = [int(current_term()] # First available term is 2007.
 
         self.set_fields(**kwargs)
 
