@@ -34,6 +34,7 @@ class MeritsCase(BaseObject):
         self.court_originated = None
         self.case_code = None
         self.question = None
+        self.question_url = None
 
         self.set_fields(**kwargs)
 
@@ -44,7 +45,7 @@ class Load(BaseObject):
 
     def __init__(self, **kwargs):
         self.cases = []
-        self.terms = [int(current_term()] # First available term is 2007.
+        self.terms = [int(current_term())] # First available term is 2007.
 
         self.set_fields(**kwargs)
 
@@ -79,6 +80,7 @@ class Load(BaseObject):
                     # These get written as PDFs and then transformed
                     # from PDF to text in two steps.
                     detail_url = row.select('a')[0].attrs['href'].replace('../', 'http://supremecourt.gov/').replace(' ', '%20')
+                    cases[current_case]['question_url'] = detail_url
                     pdf_path = '/tmp/%s' % detail_url.split('/')[-1]
                     txt_path = pdf_path.replace('.pdf', '.txt')
 
