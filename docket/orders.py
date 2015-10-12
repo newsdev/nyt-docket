@@ -31,6 +31,7 @@ class Orders(BaseObject):
         self.date = None
         self.orders_pdf_url = None
         self.orders_type = None
+        self.term = None
 
         self.set_fields(**kwargs)
 
@@ -56,6 +57,7 @@ class Load(BaseObject):
 
             for row in rows:
                 orders_dict = {}
+                orders_dict['term'] = term
                 orders_dict['date'] = row.select('span')[0].text.strip()
                 orders_dict['orders_pdf_url'] = 'http://supremecourt.gov' + row.select('span')[1].select('a')[0].attrs['href']
                 orders_dict['orders_type'] = row.select('span')[1].select('a')[0].text.strip()
