@@ -6,6 +6,14 @@ pip install nyt-docket
 ```
 
 ## Using nyt-docket
+
+### Command-line interface
+```
+docket grants 2015
+docket orders 2015
+docket opinions 2015
+```
+
 ### Demo app
 Run the demo app.
 ```
