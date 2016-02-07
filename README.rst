@@ -2,17 +2,26 @@
    :alt: 
 
 Getting started
-===============
+---------------
 
 ::
 
     pip install nyt-docket
 
 Using nyt-docket
-================
+----------------
+
+Command-line interface
+~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    docket grants 2015
+    docket orders 2015
+    docket opinions 2015
 
 Demo app
---------
+~~~~~~~~
 
 Run the demo app.
 
@@ -21,12 +30,12 @@ Run the demo app.
     python -m docket.demo
 
 Modules
--------
+~~~~~~~
 
 Use the docket loader manually from within your Python script.
 
 Grants (new cases)
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 Grants are cases that have been granted certiorari and will be heard by
 the Court in this term. The most interesting thing about a grant,
@@ -45,7 +54,7 @@ attaches it to the case as a text blob.
         print case.__dict__
 
 Slip opinions (decisions)
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Slip opinions are decisions in cases the Court has either heard
 arguments on or has made a procedural decision on. These opinions are
@@ -65,7 +74,7 @@ as a hyperlink.
         print case.__dict__
 
 Orders (all kinds of things)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Orders are the daily business of the Court. Denials of certiorari as
 well as various other procedural motions are resolved in the orders
