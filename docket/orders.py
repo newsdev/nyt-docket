@@ -39,6 +39,9 @@ class Orders(BaseObject):
     def __unicode__(self):
         return "%s - %s" % (self.date, self.orders_type)
 
+    def serialize(self):
+        return dict(self.__dict__)
+
 
 class OrdersCase(BaseObject):
     def __init__(self, **kwargs):
@@ -56,6 +59,8 @@ class OrdersCase(BaseObject):
     def __unicode__(self):
         return self.casename
 
+    def serialize(self):
+        return dict(self.__dict__)
 
 class Load(BaseObject):
 

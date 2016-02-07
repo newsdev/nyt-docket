@@ -53,6 +53,9 @@ class MeritsCase(BaseObject):
     def __unicode__(self):
         return "(%s) %s" % (self.term, self.casename)
 
+    def serialize(self):
+        return dict(self.__dict__)
+
 class Load(BaseObject):
 
     def __init__(self, **kwargs):

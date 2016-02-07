@@ -41,6 +41,15 @@ class MeritsCase(BaseObject):
     def __unicode__(self):
         return "(%s) %s" % (self.term, self.casename)
 
+    def serialize(self):
+        payload = dict(self.__dict__)
+        for k,v in payload.items():
+            try:
+                payload[k] = v.encode('utf8')
+            except AttributeError:
+                pass
+        return payload
+
 class Load(BaseObject):
 
     def __init__(self, **kwargs):
