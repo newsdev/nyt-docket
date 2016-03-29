@@ -29,6 +29,10 @@ class DocketBaseController(CementBaseController):
                 help='Term year as a four-digit number, e.g., 2008. Remember \
                 that term years represent the year the term began, not ended.'
             )),
+            (['--format-json'], dict(
+                action='store_true',
+                help='Pretty print JSON when using `-o json`.'
+            )),
             (['-v', '--version'], dict(
                 action='version',
                 version=BANNER

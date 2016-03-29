@@ -5,19 +5,30 @@ import re
 from bs4 import BeautifulSoup
 import requests
 
-JUSTICE_MAP = {
+JUSTICE_ID_MAP = {
     'A': '112',
     'AK': '106',
     'AS': '105',
     'B': '110',
-    'D': None,
     'EK': '114',
     'G': '109',
     'K': '106',
-    'PC': None,
     'R': '111',
     'SS': '113',
     'T': '108'
+}
+
+JUSTICE_NAME_MAP = {
+    'A': 'Samuel Alito',
+    'AK': 'Anthony Kennedy',
+    'AS': 'Antonin Scalia',
+    'B': 'Stephen Breyer',
+    'EK': 'Elena Kagan',
+    'G': 'Ruth Bader Ginsburg',
+    'K': 'Anthony Kennedy',
+    'R': 'John G. Roberts',
+    'SS': 'Sonia Sotomayor',
+    'T': 'Clarence Thomas'
 }
 
 def current_term():
@@ -46,7 +57,10 @@ class MeritsCase(BaseObject):
         self.docket = None
         self.datedecided = None
         self.majopinionwriter = None
+        self.majopinionwriter_name = None
         self.opinion_pdf_url = None
+        self.per_curiam = False
+        self.decree = False
 
         self.set_fields(**kwargs)
 
@@ -79,7 +93,19 @@ class Load(BaseObject):
                 case_dict['casename'] = cells[3].text.strip()
                 case_dict['datedecided'] = cells[1].text.strip()
                 case_dict['docket'] = cells[2].text.strip()
-                case_dict['majopinionwriter'] = JUSTICE_MAP[cells[5].text.strip()]
+
+                try:
+                    case_dict['majopinionwriter'] = JUSTICE_ID_MAP[cells[5].text.strip()]
+                    case_dict['majopinionwriter_name'] = JUSTICE_NAME_MAP[cells[5].text.strip()]
+                except KeyError:
+                    pass
+
+                if cells[5].text.strip() == 'PC':
+                    case_dict['per_curiam'] = True
+
+                if cells[5].text.strip() == 'D':
+                    case_dict['decree'] = True
+
                 case_dict['opinion_pdf_url'] = 'http://supremecourt.gov' + cells[3].select('a')[0].attrs['href']
                 case_dict['term'] = term
                 self.cases.append(MeritsCase(**case_dict))
