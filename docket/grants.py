@@ -5,6 +5,20 @@ import re
 from bs4 import BeautifulSoup
 import requests
 
+CASE_CODE_MAP = {
+    "C": "Certiorari",
+    "A": "Appeal",
+    "Q": "Certified Question",
+    "S": "State",
+    "F": "U.S. Court of Appeals",
+    "T": "Three-Judge District Court",
+    "M": "U.S. Court of Appeals for the Armed Forces",
+    "O": "Other Court",
+    "X": "Civil",
+    "Y": "Criminal",
+    "H": "Habeas Corpus or other collateral attack",
+}
+
 def current_term():
     now = datetime.datetime.now()
     return "%s" % (now.year - 1 if now.month < 10 else now.year)
@@ -35,6 +49,9 @@ class MeritsCase(BaseObject):
         self.case_code = None
         self.question = None
         self.question_url = None
+        self.jurisdictional_grounds = None
+        self.court_below = None
+        self.nature_of_case = None
 
         self.set_fields(**kwargs)
 
@@ -122,6 +139,14 @@ class Load(BaseObject):
                         case_code = case_code.group(0)
 
                     cases[current_case]['case_code'] = unicode(case_code).strip()
+
+                    try:
+                        cases[current_case]['jurisdictional_grounds'] = CASE_CODE_MAP[unicode(case_code).strip()[0]]
+                        cases[current_case]['court_below'] = CASE_CODE_MAP[unicode(case_code).strip()[1]]
+                        cases[current_case]['nature_of_case'] = CASE_CODE_MAP[unicode(case_code).strip()[2]]
+                    except KeyError:
+                        pass
+
                     cases[current_case]['casename'] = cases[current_case]['casename'].replace(cases[current_case]['case_code'], '').strip()
 
             for docket,case in cases.items():
