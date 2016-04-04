@@ -26,7 +26,7 @@ setup(
     },
     license="Apache License 2.0",
     keywords='SCOTUS data parsing scraping legal law court',
-    install_requires=['cement==2.6.2','pymongo==3.2.1','clint'],
+    install_requires=['cement','pymongo','clint','requests'],
     classifiers=['Development Status :: 3 - Alpha',
                  'Intended Audience :: Developers',
                  'Programming Language :: Python',
