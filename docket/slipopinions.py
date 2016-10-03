@@ -108,4 +108,5 @@ class Load(BaseObject):
 
                 case_dict['opinion_pdf_url'] = 'http://supremecourt.gov' + cells[3].select('a')[0].attrs['href']
                 case_dict['term'] = term
-                self.cases.append(MeritsCase(**case_dict))
+                if case_dict['opinion_pdf_url'] != 'http://supremecourt.gov/opinions/':
+                    self.cases.append(MeritsCase(**case_dict))

@@ -62,7 +62,7 @@ class MeritsCase(BaseObject):
         payload = dict(self.__dict__)
         for k,v in payload.items():
             try:
-                payload[k] = v.encode('utf8')
+                payload[k] = v
             except AttributeError:
                 pass
         return payload
