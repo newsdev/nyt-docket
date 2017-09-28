@@ -1,6 +1,7 @@
 import datetime
 import os
 import re
+import subprocess
 
 from bs4 import BeautifulSoup
 import requests
@@ -33,10 +34,10 @@ class BaseObject(object):
                 setattr(self, k, v)
 
     def __repr__(self):
-        return self.__unicode__()
+        return self.__str__()
 
     def __str__(self):
-        return self.__unicode__()
+        return self.__str__()
 
 class MeritsCase(BaseObject):
     def __init__(self, **kwargs):
@@ -55,7 +56,7 @@ class MeritsCase(BaseObject):
 
         self.set_fields(**kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return "(%s) %s" % (self.term, self.casename)
 
     def serialize(self):
@@ -80,7 +81,7 @@ class Load(BaseObject):
             URL = 'http://www.supremecourt.gov/grantednotedlist/%sgrantednotedlist' % str(term)[2:4]
 
             r = requests.get(URL)
-            soup = BeautifulSoup(r.content, 'lxml')
+            soup = BeautifulSoup(r.text, 'lxml')
 
             rows = soup.select('.WordSection1 p.MsoNormal')
 
@@ -93,7 +94,7 @@ class Load(BaseObject):
             continued = False
             for idx, row in enumerate(rows):
                 line = " ".join(row.text.split())
-                line = line.decode('latin-1').encode('utf-8').replace(u'\xa0', u'')
+                line = line.replace(u'\xa0', u'')
                 line = line.replace(u'&nbsp;', '')
 
                 if len(row.select('a')) > 0:
@@ -110,15 +111,13 @@ class Load(BaseObject):
                     txt_path = pdf_path.replace('.pdf', '.txt')
 
                     if not os.path.isfile(pdf_path):
-                        z = requests.get(detail_url)
-                        with open(pdf_path, 'w') as writefile:
-                            writefile.write(z.content)
-
+                        subprocess.call(['curl', '-o', pdf_path, detail_url])
+                    
                     if not os.path.isfile(txt_path):
-                        os.system('pdf2txt.py -o %s %s' % (txt_path, pdf_path))
+                        subprocess.call(['pdf2txt.py', '-o', txt_path, pdf_path])
 
                     with open(txt_path, 'r') as readfile:
-                        cases[current_case]['question'] = str(readfile.read()).decode('latin-1')
+                        cases[current_case]['question'] = str(readfile.read())
 
                 if u"Court:" in line:
                     continued = False
@@ -138,12 +137,12 @@ class Load(BaseObject):
                     if case_code:
                         case_code = case_code.group(0)
 
-                    cases[current_case]['case_code'] = unicode(case_code).strip()
+                    cases[current_case]['case_code'] = str(case_code).strip()
 
                     try:
-                        cases[current_case]['jurisdictional_grounds'] = CASE_CODE_MAP[unicode(case_code).strip()[0]]
-                        cases[current_case]['court_below'] = CASE_CODE_MAP[unicode(case_code).strip()[1]]
-                        cases[current_case]['nature_of_case'] = CASE_CODE_MAP[unicode(case_code).strip()[2]]
+                        cases[current_case]['jurisdictional_grounds'] = CASE_CODE_MAP[str(case_code).strip()[0]]
+                        cases[current_case]['court_below'] = CASE_CODE_MAP[str(case_code).strip()[1]]
+                        cases[current_case]['nature_of_case'] = CASE_CODE_MAP[str(case_code).strip()[2]]
                     except KeyError:
                         pass
 

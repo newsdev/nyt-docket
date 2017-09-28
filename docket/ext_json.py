@@ -1,8 +1,8 @@
-import json
 import sys
+
 from bson import json_util
 from cement.core import handler, output
-
+import ujson as json
 
 class ElexJSONOutputHandler(output.CementOutputHandler):
     """

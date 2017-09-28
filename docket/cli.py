@@ -88,7 +88,6 @@ class DocketBaseController(CementBaseController):
         )
         l = orders.Load(terms=[self.app.pargs.term[0]])
         l.scrape()
-        l.parse()
         data = l.orders
         self.app.render(data)
 

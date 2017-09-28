@@ -12,7 +12,7 @@ def read(filename):
 
 setup(
     name='nyt-docket',
-    version='0.0.14',
+    version='0.0.16',
     author='Jeremy Bowers',
     author_email='jeremy.bowers@nytimes.com',
     url='https://github.com/newsdev/nyt-docket',
@@ -26,7 +26,7 @@ setup(
     },
     license="Apache License 2.0",
     keywords='SCOTUS data parsing scraping legal law court',
-    install_requires=['cement','pymongo','clint','requests','csvkit'],
+    install_requires=['cement','clint','requests','ujson','bs4','lxml', 'pdfminer.six'],
     classifiers=['Development Status :: 3 - Alpha',
                  'Intended Audience :: Developers',
                  'Programming Language :: Python',

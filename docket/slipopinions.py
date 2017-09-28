@@ -15,7 +15,8 @@ JUSTICE_ID_MAP = {
     'K': '106',
     'R': '111',
     'SS': '113',
-    'T': '108'
+    'T': '108',
+    'NG': '114'
 }
 
 JUSTICE_NAME_MAP = {
@@ -26,6 +27,7 @@ JUSTICE_NAME_MAP = {
     'EK': 'Elena Kagan',
     'G': 'Ruth Bader Ginsburg',
     'K': 'Anthony Kennedy',
+    'NG': 'Neil Gorsuch',
     'R': 'John G. Roberts',
     'SS': 'Sonia Sotomayor',
     'T': 'Clarence Thomas'
@@ -85,28 +87,32 @@ class Load(BaseObject):
             r = requests.get(URL)
             soup = BeautifulSoup(r.content, 'lxml')
 
-            rows = soup.select('#mainbody center table tr')[1:]
+            rows = soup.select('div.panel-body tr')[1:]
 
             for row in rows:
                 case_dict = {}
                 cells = row.select('td')
-                case_dict['casename'] = cells[3].text.strip()
-                case_dict['datedecided'] = cells[1].text.strip()
-                case_dict['docket'] = cells[2].text.strip()
 
-                try:
-                    case_dict['majopinionwriter'] = JUSTICE_ID_MAP[cells[5].text.strip()]
-                    case_dict['majopinionwriter_name'] = JUSTICE_NAME_MAP[cells[5].text.strip()]
-                except KeyError:
-                    pass
+                if len(cells) > 0:
+                    case_dict['term'] = term
 
-                if cells[5].text.strip() == 'PC':
-                    case_dict['per_curiam'] = True
+                    case_dict['casename'] = cells[3].text.strip()
+                    case_dict['datedecided'] = cells[1].text.strip()
+                    case_dict['docket'] = cells[2].text.strip()
 
-                if cells[5].text.strip() == 'D':
-                    case_dict['decree'] = True
+                    try:
+                        case_dict['majopinionwriter'] = JUSTICE_ID_MAP[cells[5].text.strip()]
+                        case_dict['majopinionwriter_name'] = JUSTICE_NAME_MAP[cells[5].text.strip()]
+                    except KeyError:
+                        pass
 
-                case_dict['opinion_pdf_url'] = 'http://supremecourt.gov' + cells[3].select('a')[0].attrs['href']
-                case_dict['term'] = term
-                if case_dict['opinion_pdf_url'] != 'http://supremecourt.gov/opinions/':
-                    self.cases.append(MeritsCase(**case_dict))
+                    if cells[5].text.strip() == 'PC':
+                        case_dict['per_curiam'] = True
+
+                    if cells[5].text.strip() == 'D':
+                        case_dict['decree'] = True
+
+                    case_dict['opinion_pdf_url'] = 'http://supremecourt.gov' + cells[3].select('a')[0].attrs['href']
+
+                    if case_dict['opinion_pdf_url'] != 'http://supremecourt.gov/opinions/':
+                        self.cases.append(MeritsCase(**case_dict))
